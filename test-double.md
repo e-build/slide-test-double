@@ -27,10 +27,12 @@ Jimmy | Shopl & Company | June 3, 2022
 [comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
 [comment]: # (!!!)
 
-스턴트 더블 사진
+<div style="text-align:center;">
+    <img src="resources/stunt-double.jpeg" width="400px" height="450px" style="border-radius:8px;">
+</div>
+
 <br />
-<br />
-<br />
+
 <div style="text-align:right;font-size:20px;">
 XUnit Test Patterns, 2002
 </div>
@@ -50,14 +52,29 @@ public void createOrder (){
 [comment]: # (!!! data-background-color="aquamarine")
 
 ### 테스트 더블이란?
-> Test Double is a generic term for any case where you replace a production object for testing purposes. There
-> are various kinds of double that Gerard lists:
-테스트 더블은 테스트 목적을 위해 프로덕션 객체를 다른 무언가로 교체하는 모든 경우를 표현하는 용어
-<div style="text-align:right;font-size:20px;">
-XUnit Test Patterns, 2002
+
+<br/>
+
+<p style="font-size:30px;">
+    <span style="color:#ba2552; text-decoration:underline;"><strong>테스트 목적</strong></span>을 위해 프로덕션 
+    <span style="color:#ba2552; text-decoration:underline;"><strong>객체를 다른 무언가로 교체</strong></span>하는 <br/>
+    모든 경우를 표현하는 용어
+</p>
+
+<div style="display:flex; justify-content:center;">
+    <div style="border-left:3px solid #a2a9b3; font-size:25px; font-style:italic; color:#a2a9b3;        box-sizing:content-box; width:fix-content; padding-left:20px;">
+    Test Double is a generic term for any case where you replace <br/>
+    a production object for testing purposes.
+    </div>
 </div>
 
-[comment]: # (!!!)
+<br/>
+
+<div style="text-align:right; font-size:17px;">
+    XUnit Test Patterns, 2002
+</div>
+
+[comment]: # (!!! data-auto-animate)
 
 ## Dummy
 ## Stub
@@ -71,7 +88,10 @@ XUnit Test Patterns, 2002
 
 [comment]: # (|||)
 
-Dummy 정의
+실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
+
+* 인스턴스화된 객체만 필요하고, 기능까지는 필요하지 않은 경우
+* 주로 매개변수 목록을 채우는 용도
 
 [comment]: # (|||)
 
@@ -83,11 +103,12 @@ Dummy 예제
 
 [comment]: # (|||)
 
-Stub 정의
+Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+* 미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
 
 [comment]: # (|||)
 
-Sutb 예제
+Stub 예제
 
 [comment]: # (!!! data-background-color="black")
 
@@ -95,7 +116,7 @@ Sutb 예제
 
 [comment]: # (|||)
 
-Fake 정의
+실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
 
 [comment]: # (|||)
 
