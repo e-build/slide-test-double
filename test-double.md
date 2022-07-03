@@ -20,19 +20,14 @@
 [comment]: # (respondToHashChanges: false)
 [comment]: # (Other settings are documented at https://revealjs.com/config/)
 
-[comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
-
 Jimmy | Shopl & Company | June 3, 2022
 
 # 테스트 더블
 
+[comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
 [comment]: # (!!!)
-[comment]: # (1. 유래를 통한 테스트 더블의 이해)
-[comment]: # (2. 테스트에서 테스트 더블이 어떤 역할을 어떻게 대신하는 지 )
-[comment]: # (## 주석 - XUnit Test Patterns )
 
 스턴트 더블 사진
-
 <br />
 <br />
 <br />
@@ -41,6 +36,9 @@ XUnit Test Patterns, 2002
 </div>
 
 [comment]: # (!!!)
+[comment]: # (1. 유래를 통한 테스트 더블의 이해)
+[comment]: # (2. 테스트에서 테스트 더블이 어떤 역할을 어떻게 대신하는 지 )
+[comment]: # (## 주석 - XUnit Test Patterns )
 
 ### 간단한 문제 예제
 ```java
@@ -49,9 +47,15 @@ public void createOrder (){
 }
 ```
 
-[comment]: # (!!!)
+[comment]: # (!!! data-background-color="aquamarine")
 
-테스트 더블 정의
+### 테스트 더블이란?
+> Test Double is a generic term for any case where you replace a production object for testing purposes. There
+> are various kinds of double that Gerard lists:
+테스트 더블은 테스트 목적을 위해 프로덕션 객체를 다른 무언가로 교체하는 모든 경우를 표현하는 용어
+<div style="text-align:right;font-size:20px;">
+XUnit Test Patterns, 2002
+</div>
 
 [comment]: # (!!!)
 
@@ -64,7 +68,67 @@ public void createOrder (){
 [comment]: # (!!!)
 
 # Dummy
-<br />
-<br />
+
+[comment]: # (|||)
+
+Dummy 정의
+
+[comment]: # (|||)
+
+Dummy 예제
+
+[comment]: # (!!! data-background-color="black")
+
+# Stub
+
+[comment]: # (|||)
+
+Stub 정의
+
+[comment]: # (|||)
+
+Sutb 예제
+
+[comment]: # (!!! data-background-color="black")
+
+# Fake
+
+[comment]: # (|||)
+
+Fake 정의
+
+[comment]: # (|||)
+
+Fake 예제
+
+[comment]: # (!!! data-background-color="black")
+
+# Spy
+
+[comment]: # (|||)
+
+Spy 정의
+
+[comment]: # (|||)
+
+Spy 예제
+
+[comment]: # (!!! data-background-color="black")
+
+# Mock
+
+[comment]: # (|||)
+
+Mock 정의
+
+[comment]: # (|||)
+
+Mock 예제
+
+[comment]: # (!!! data-background-color="black")
+
+
+
+
 
 
