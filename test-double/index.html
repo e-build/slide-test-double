@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="dist/reveal.css">
 <link rel="stylesheet" href="dist/theme/white.css" id="theme">
 		<!-- Theme used for syntax highlighted code -->
-<link rel="stylesheet" href="plugin/highlight/zenburn.min.css" id="highlight-theme"></head>
+<link rel="stylesheet" href="plugin/highlight/decaf.min.css" id="highlight-theme"></head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
@@ -32,7 +32,6 @@
 Jimmy | Shopl & Company | June 3, 2022
 
 # 테스트 더블
-
 [comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
 </textarea></section>
 <section data-markdown  ><textarea data-template>
@@ -41,14 +40,12 @@ Jimmy | Shopl & Company | June 3, 2022
     <img src="resources/stunt-double.jpeg" width="400px" height="450px" style="border-radius:8px;">
 </div>
 
-<br />
-
-<div style="text-align:right;font-size:20px;">
-XUnit Test Patterns, 2002
+<div style="text-align:center; font-size:20px;">
+<strong>< <i>Stunt double</i> ></strong>
 </div>
 
 </textarea></section>
-<section data-markdown  data-background-color="aquamarine"><textarea data-template>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 [comment]: # (1. 유래를 통한 테스트 더블의 이해)
 [comment]: # (2. 테스트에서 테스트 더블이 어떤 역할을 어떻게 대신하는 지 )
 [comment]: # (## 주석 - XUnit Test Patterns )
@@ -61,7 +58,7 @@ public void createOrder (){
 ```
 
 </textarea></section>
-<section data-markdown  data-auto-animate><textarea data-template>
+<section data-markdown  ><textarea data-template>
 
 ### 테스트 더블이란?
 
@@ -83,11 +80,11 @@ public void createOrder (){
 <br/>
 
 <div style="text-align:right; font-size:17px;">
-    XUnit Test Patterns, 2002
+    xUnit Test Patterns, 2010
 </div>
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
 ## Dummy
 ## Stub
@@ -97,55 +94,244 @@ public void createOrder (){
 
 </textarea></section>
 <section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
 # Dummy
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
+# Dummy
 
-* 인스턴스화된 객체만 필요하고, 기능까지는 필요하지 않은 경우
+* 실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+# Dummy
+
+* 실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
 * 주로 매개변수 목록을 채우는 용도
 
 </textarea></section>
-<section data-markdown  data-background-color="black"><textarea data-template>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
-Dummy 예제
+Dummy 예제 - 1. 로그인 기능 구현
+
+```java [|3|5-7|9-11|13|]
+public class LoginService {
+
+	public boolean login(Email email, Password password) {
+	
+        if (email.validate()) {
+			throw new IllegalArgumentException("Invalid email");
+		}
+		
+        if (password.validate()) {
+			throw new IllegalArgumentException("Invalid password");
+		}
+		
+        return true;
+	}
+}
+```
+
+</textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Dummy 예제 - 2. 이메일 유효성 TC
+
+```java [|5]
+@Test
+void login_GivenInvalidEmail_ThrowIllegalArgument...() {
+
+    Email email = new Email("jimmy.lee # shoplworks.com");
+    Password password = new Password("any string"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid email");
+}
+```
+
+</textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Dummy 예제 - 3. 현업에선...
+
+```java [|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30]
+Person person = Person.builder()
+            .firstName("ji")
+            .lastName("mmy")
+            .email("foo.bar@gmail.com")
+            .gender(Gender.MALE)
+            .isEmailReceive(false)
+            .address(Address.builder()
+                .zipCode("123456")
+                .city("suzi")
+                .country("Korea")
+                .street(Street.builder()
+                    .number(12)
+                    .type((byte)1)
+                    .name("Oxford street")
+                    .build())
+                .build())
+            .phone(Phone.builder()
+                .countryCode("82")
+                .number("010-2384-0880")
+                .build())
+            .height(Height.builder()
+                .unit(LengthUnitType.CM)
+                .value(165)
+                .build())
+            .weight(Weight.builder()
+                .unit(WeightUnitType.KG)
+                .value(92)
+                .build())
+            .build();
+```
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Dummy 관련 유용한 오픈소스
+
+* [Fixture Monkey](https://naver.github.io/fixture-monkey/docs/v0.3.x/getting-started/)
+  ```java
+  FixtureMonkey sut = FixtureMonkey.create();
+  Person person = sut.giveMeOne(Person.class);
+  ```
+* [Easy Random](https://github.com/j-easy/easy-random)
+  ```java
+  Person person = easyRandom.nextObject(Person.class);
+  ```
 
 </textarea></section>
 </section>
 <section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
 # Stub
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
-미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
+# Stub
+
+* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
 
 </textarea></section>
-<section data-markdown  data-background-color="black"><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-Stub 예제
+# Stub
+
+* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+* 미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
+
+</textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Stub 예제 - 1. 로그인 기능 구현
+
+```java [|9-11]
+public class LoginService {
+
+	public boolean login(Email email, Password password) {
+	
+        if (email.validate()) {
+			throw new IllegalArgumentException("Invalid email");
+		}
+		
+        if (password.validate()) {
+			throw new IllegalArgumentException("Invalid password");
+		}
+		
+        return true;
+	}
+}
+```
+
+</textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Stub 예제 - 2. 패스워드 유효성 TC (직접구현)
+
+```java
+public class EmailStub extends Email {
+
+    ...
+    
+    @Override
+    public boolean validate(){
+        return true;
+    }
+}
+```
+```java
+import static org.mockito.BDDMockito.*;
+
+@Test
+void login_GivenInvalidPassword_ThrowIllegalArgument...() {
+
+    Email email = new EmailStub("any string");
+    Password password = new Password("donothavenumber"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid password");
+}
+```
+
+</textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Stub 예제 - 2. 패스워드 유효성 TC (Mockito)
+
+```java [|7-8]
+import static org.mockito.BDDMockito.*;
+import org.mockito.Mockito;
+
+@Test
+void login_GivenInvalidPassword_ThrowIllegalArgument...() {
+
+    Email email = Mockito.mock(Email.class)
+    given(email.validate()).willReturn(true);
+
+    Password password = new Password("donothavenumber"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid password");
+}
+```
 
 </textarea></section>
 </section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+</textarea></section>
 <section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
 # Fake
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
+# Fake
+* 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
 
 </textarea></section>
-<section data-markdown  data-background-color="black"><textarea data-template>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
 Fake 예제
 
@@ -162,7 +348,7 @@ Fake 예제
 Spy 정의
 
 </textarea></section>
-<section data-markdown  data-background-color="black"><textarea data-template>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
 Spy 예제
 
@@ -179,7 +365,7 @@ Spy 예제
 Mock 정의
 
 </textarea></section>
-<section data-markdown  data-background-color="black"><textarea data-template>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
 Mock 예제
 

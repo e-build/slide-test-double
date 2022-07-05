@@ -5,7 +5,7 @@
 
 [comment]: # (Set the theme:)
 [comment]: # (THEME = white)
-[comment]: # (CODE_THEME = base16/zenburn)
+[comment]: # (CODE_THEME = base16/decaf)
 [comment]: # (The list of themes is at https://revealjs.com/themes/)
 [comment]: # (The list of code themes is at https://highlightjs.org/)
 
@@ -23,7 +23,6 @@
 Jimmy | Shopl & Company | June 3, 2022
 
 # 테스트 더블
-
 [comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
 [comment]: # (!!!)
 
@@ -31,10 +30,8 @@ Jimmy | Shopl & Company | June 3, 2022
     <img src="resources/stunt-double.jpeg" width="400px" height="450px" style="border-radius:8px;">
 </div>
 
-<br />
-
-<div style="text-align:right;font-size:20px;">
-XUnit Test Patterns, 2002
+<div style="text-align:center; font-size:20px;">
+<strong>< <i>Stunt double</i> ></strong>
 </div>
 
 [comment]: # (!!!)
@@ -49,7 +46,7 @@ public void createOrder (){
 }
 ```
 
-[comment]: # (!!! data-background-color="aquamarine")
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
 ### 테스트 더블이란?
 
@@ -71,10 +68,10 @@ public void createOrder (){
 <br/>
 
 <div style="text-align:right; font-size:17px;">
-    XUnit Test Patterns, 2002
+    xUnit Test Patterns, 2010
 </div>
 
-[comment]: # (!!! data-auto-animate)
+[comment]: # (!!!)
 
 ## Dummy
 ## Stub
@@ -82,47 +79,234 @@ public void createOrder (){
 ## Spy
 ## Mock
 
-[comment]: # (!!!)
+[comment]: # (!!! data-auto-animate)
 
 # Dummy
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
+# Dummy
 
-* 인스턴스화된 객체만 필요하고, 기능까지는 필요하지 않은 경우
+* 실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
+
+[comment]: # (||| data-auto-animate)
+
+# Dummy
+
+* 실제로 사용되지 않지만 전달되기 위해 만들어지는 객체
 * 주로 매개변수 목록을 채우는 용도
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-Dummy 예제
+Dummy 예제 - 1. 로그인 기능 구현
 
-[comment]: # (!!! data-background-color="black")
+```java [|3|5-7|9-11|13|]
+public class LoginService {
+
+	public boolean login(Email email, Password password) {
+	
+        if (email.validate()) {
+			throw new IllegalArgumentException("Invalid email");
+		}
+		
+        if (password.validate()) {
+			throw new IllegalArgumentException("Invalid password");
+		}
+		
+        return true;
+	}
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Dummy 예제 - 2. 이메일 유효성 TC
+
+```java [|5]
+@Test
+void login_GivenInvalidEmail_ThrowIllegalArgument...() {
+
+    Email email = new Email("jimmy.lee # shoplworks.com");
+    Password password = new Password("any string"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid email");
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Dummy 예제 - 3. 현업에선...
+
+```java [|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30]
+Person person = Person.builder()
+            .firstName("ji")
+            .lastName("mmy")
+            .email("foo.bar@gmail.com")
+            .gender(Gender.MALE)
+            .isEmailReceive(false)
+            .address(Address.builder()
+                .zipCode("123456")
+                .city("suzi")
+                .country("Korea")
+                .street(Street.builder()
+                    .number(12)
+                    .type((byte)1)
+                    .name("Oxford street")
+                    .build())
+                .build())
+            .phone(Phone.builder()
+                .countryCode("82")
+                .number("010-2384-0880")
+                .build())
+            .height(Height.builder()
+                .unit(LengthUnitType.CM)
+                .value(165)
+                .build())
+            .weight(Weight.builder()
+                .unit(WeightUnitType.KG)
+                .value(92)
+                .build())
+            .build();
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+## Dummy 관련 유용한 오픈소스
+
+* [Fixture Monkey](https://naver.github.io/fixture-monkey/docs/v0.3.x/getting-started/)
+  ```java
+  FixtureMonkey sut = FixtureMonkey.create();
+  Person person = sut.giveMeOne(Person.class);
+  ```
+* [Easy Random](https://github.com/j-easy/easy-random)
+  ```java
+  Person person = easyRandom.nextObject(Person.class);
+  ```
+
+[comment]: # (!!! data-auto-animate)
 
 # Stub
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+# Stub
+
+* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+
+[comment]: # (||| data-auto-animate)
+
+# Stub
+
+* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
 * 미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-Stub 예제
+Stub 예제 - 1. 로그인 기능 구현
 
-[comment]: # (!!! data-background-color="black")
+```java [|9-11]
+public class LoginService {
+
+	public boolean login(Email email, Password password) {
+	
+        if (email.validate()) {
+			throw new IllegalArgumentException("Invalid email");
+		}
+		
+        if (password.validate()) {
+			throw new IllegalArgumentException("Invalid password");
+		}
+		
+        return true;
+	}
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Stub 예제 - 2. 패스워드 유효성 TC (직접구현)
+
+```java
+public class EmailStub extends Email {
+
+    ...
+    
+    @Override
+    public boolean validate(){
+        return true;
+    }
+}
+```
+```java
+import static org.mockito.BDDMockito.*;
+
+@Test
+void login_GivenInvalidPassword_ThrowIllegalArgument...() {
+
+    Email email = new EmailStub("any string");
+    Password password = new Password("donothavenumber"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid password");
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Stub 예제 - 2. 패스워드 유효성 TC (Mockito)
+
+```java [|7-8]
+import static org.mockito.BDDMockito.*;
+import org.mockito.Mockito;
+
+@Test
+void login_GivenInvalidPassword_ThrowIllegalArgument...() {
+
+    Email email = Mockito.mock(Email.class)
+    given(email.validate()).willReturn(true);
+
+    Password password = new Password("donothavenumber"); 
+
+    assertThatThrownBy(
+        () -> {
+            loginService.login(email, password);
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid password");
+}
+```
+
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
+
+[comment]: # (!!! data-auto-animate)
 
 # Fake
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
+# Fake
+* 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
+
+# Fake
+* 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
+* List, Map 을 활용한 Repository 구현 혹은 InMemoryTestDatabase 활용
+
+[comment]: # (||| data-auto-animate)
 
 Fake 예제
 
-[comment]: # (!!! data-background-color="black")
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
 # Spy
 
@@ -134,7 +318,7 @@ Spy 정의
 
 Spy 예제
 
-[comment]: # (!!! data-background-color="black")
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
 # Mock
 
@@ -146,7 +330,19 @@ Mock 정의
 
 Mock 예제
 
-[comment]: # (!!! data-background-color="black")
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
+
+# 스프링의 테스트 더블
+
+@Mock, @Spy vs @MockBean, @SpyBean
+
+[comment]: # (|||)
+
+@InjectMocks vs @Autowired
+
+[comment]: # (!!!)
+
+# 
 
 
 
