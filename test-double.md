@@ -300,11 +300,34 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 # Fake
 * 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
-* List, Map 을 활용한 Repository 구현 혹은 InMemoryTestDatabase 활용
+* List, Map 을 활용한 Repository 구현 <br /> 혹은 InMemoryTestDatabase 활용
 
 [comment]: # (||| data-auto-animate)
 
-Fake 예제
+Fake 예제 - 1. 로그인 기능 추가
+```java [|9-11]
+public class LoginService {
+
+    private final UserRepository userRepository;
+
+    public LoginServic(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+
+	public boolean login(Email email, Password password) {
+	
+        if (email.validate()) {
+			throw new IllegalArgumentException("Invalid email");
+		}
+		
+        if (password.validate()) {
+			throw new IllegalArgumentException("Invalid password");
+		}
+		
+        return true;
+	}
+}
+```
 
 [comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
@@ -342,7 +365,10 @@ Mock 예제
 
 [comment]: # (!!!)
 
-# 
+# 사족
+
+* 테스트 가능한 설계
+* 테스트 픽스쳐
 
 
 
