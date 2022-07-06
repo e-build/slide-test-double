@@ -37,7 +37,7 @@ Jimmy | Shopl & Company | June 3, 2022
 <section data-markdown  ><textarea data-template>
 
 <div style="text-align:center;">
-    <img src="resources/stunt-double.jpeg" width="400px" height="450px" style="border-radius:8px;">
+    <img src="resources/stunt-double.jpeg" width="600px" height="450px" style="border-radius:8px;">
 </div>
 
 <div style="text-align:center; font-size:20px;">
@@ -45,20 +45,10 @@ Jimmy | Shopl & Company | June 3, 2022
 </div>
 
 </textarea></section>
-<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+<section data-markdown  ><textarea data-template>
 [comment]: # (1. 유래를 통한 테스트 더블의 이해)
 [comment]: # (2. 테스트에서 테스트 더블이 어떤 역할을 어떻게 대신하는 지 )
 [comment]: # (## 주석 - XUnit Test Patterns )
-
-### 간단한 문제 예제
-```java
-public void createOrder (){
-    System.out.println("hello")
-}
-```
-
-</textarea></section>
-<section data-markdown  ><textarea data-template>
 
 ### 테스트 더블이란?
 
@@ -221,15 +211,14 @@ Person person = Person.builder()
 
 # Stub
 
-* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+* 마치 실제로 동작하는 것처럼 보이게 만들어 놓은 객체
 
 </textarea></section>
 <section data-markdown  data-auto-animate><textarea data-template>
 
 # Stub
-
-* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
-* 미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
+* 마치 실제로 동작하는 것처럼 보이게 만들어 놓은 객체
+* 특정 상태를 가정한 하드코딩된 상태 -> 반환 값을 미리 정의
 
 </textarea></section>
 <section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
@@ -292,7 +281,7 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 Stub 예제 - 패스워드 유효성 TC (Mockito)
 
-```java [|7-8]
+```java [|4-5]
 @Test
 void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
@@ -311,13 +300,57 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 ```
 
 </textarea></section>
-</section>
 <section data-markdown  data-auto-animate><textarea data-template>
 
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [1-2]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+```
+<!-- .element: data-id="code" -->
 </textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [4]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+
+password.encrypt(); ??
+```
+<!-- .element: data-id="code" -->
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [4]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+
+password.encrypt(); ??
+```
+<!-- .element: data-id="code" -->
+
+<div style="display:flex; justify-content:center;">
+    <div style="border-left:3px solid #a2a9b3; font-size:25px; font-style:italic; color:black;  box-sizing:content-box; width:fix-content; padding-left:20px;">
+    stub 되지 않은 메서드들에 대해서는 Mockito의 
+    <a href="https://javadoc.io/static/org.mockito/mockito-core/3.5.10/org/mockito/Mockito.html#RETURNS_DEFAULTS">
+        Answers.RETURNS_DEFAULTS
+    </a>
+    에서 정의한 기본 메서드들을 실행
+    </div>
+</div>
+
+</textarea></section>
+</section>
 <section>
 <section data-markdown  data-auto-animate><textarea data-template>
 
+
 # Fake
 
 </textarea></section>
@@ -331,14 +364,13 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 # Fake
 * 제품에는 적합하지 않지만, 실제 동작하는 구현을 제공
-* 프로덕션 DB 대신 List, Map 을 활용한 Repository
-* 인메모리 DB, 테스트 용도 DB 별도 구성하여 활용
+* 프로덕션 DB 대신 인메모리 DB, 테스트 용도 DB 별도 구성하여 활용
 
 </textarea></section>
 <section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
 Fake 예제 - 로그인 이력 데이터 저장 추가
-```java [|13]
+```java [|3|5-7|13]
 public class LoginService {
 
     private final LoginHistoryRepository loginHistoryRepository;
@@ -383,9 +415,9 @@ public class FakeLoginHistoryRepository implements LoginHistoryRepository{
 </textarea></section>
 <section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
-Stub 예제 - 로그인 이력 저장 TC
+Fake 예제 - 로그인 이력 저장 TC
 
-```java [|11-12|18-20|22|24-27]
+```java [|6-10|15-17|19|21-24]
 public class LoginServiceTest {
     
     LoginService loginService;
@@ -427,7 +459,7 @@ public class LoginServiceTest {
 
 # Spy
 
-* 메소드의 사용 여부, 정상 호출 여부를 기록하여 검증에 활용
+* 메소드의 사용 여부, 정상 호출 여부에 대한 기록이 필요할 때 활용
 
 </textarea></section>
 <section data-markdown  ><textarea data-template>
@@ -467,7 +499,7 @@ public class LoginServiceTest {
 <section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
 
 Spy 예제 - 로그인 성공 시 이메일 전송 추가
-```java [|14]
+```java [|4|14]
 public class LoginService {
 
     private final LoginHistoryRepository loginHistoryRepository;
@@ -532,7 +564,7 @@ public class LoginServiceTest {
     @BeforeEach
     void setUp(){
         fakeLoginHistoryRepository = new FakeLoginHistoryRepository();
-        emailService = new SpyEmailService();
+        spyEmailService = new SpyEmailService();
         loginService = new LoginService(fakeLoginHistoryRepository, spyEmailService);
     }
 
@@ -553,7 +585,50 @@ public class LoginServiceTest {
 }
 ```
 </textarea></section>
+<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+
+Spy 예제 - 이메일 전송 TC (Mockito)
+
+```java
+public class LoginServiceTest {
+    
+    LoginService loginService;
+    LoginHistoryRepository fakeLoginHistoryRepository;
+    EmailService spyEmailService;
+
+    @BeforeEach
+    void setUp(){
+        fakeLoginHistoryRepository = new FakeLoginHistoryRepository();
+        spyEmailService = Mockito.mock(EmailService.class);
+        loginService = new LoginService(fakeLoginHistoryRepository, spyEmailService);
+    }
+
+    @Test
+    void login_GivenValidationPass_ThenSendEmail() {
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        then(spyEmailService)
+            .should(sendLoginSuccessEmail(captor.capture()));
+        
+        Email email = new Email("jimmy.lee@shoplworks.com");
+        Password password = Mockito.mock(Password.class);
+        given(password.validate()).willReturn(true);
+
+        loginService.login(email, password);
+
+        assertThat(captor.getValue()).isEqualTo("jimmy.lee@shoplworks.com");   
+        verify(spyEmailService).get(0);
+        verify(mock, times(1)).sendLoginSuccessEmail(anyString());
+    }
+
+}
+```
+
+</textarea></section>
+</section>
+<section>
 <section data-markdown  ><textarea data-template>
+
 # Mock
 
 </textarea></section>
@@ -569,28 +644,48 @@ Mock 예제
 </textarea></section>
 </section>
 <section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-# 스프링의 테스트 더블
-
-@Mock, @Spy vs @MockBean, @SpyBean
+### <u>사족</u>
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-@InjectMocks vs @Autowired
+### <u>사족</u>
+
+* 행위검증 vs 상태검증
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+### <u>사족</u>
+
+* 행위검증 vs 상태검증
+* 테스트 가능한 설계
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+### <u>사족</u>
+
+* 행위검증 vs 상태검증
+* 테스트 가능한 설계
+* 테스트 픽스쳐
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+### <u>사족</u>
+
+* 행위검증 vs 상태검증
+* 테스트 가능한 설계
+* 테스트 픽스쳐
+* 스프링의 테스트 더블
+<!-- @Mock, @MockBean, @Spy, SpyBean, @InjectMocks -->
 
 </textarea></section>
 </section>
 <section data-markdown ><textarea data-template>
-
-# 사족
-
-* 테스트 가능한 설계
-* 테스트 픽스쳐
-
-
-
 
 
 

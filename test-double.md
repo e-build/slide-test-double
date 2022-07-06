@@ -27,7 +27,7 @@ Jimmy | Shopl & Company | June 3, 2022
 [comment]: # (!!!)
 
 <div style="text-align:center;">
-    <img src="resources/stunt-double.jpeg" width="400px" height="450px" style="border-radius:8px;">
+    <img src="resources/stunt-double.jpeg" width="600px" height="450px" style="border-radius:8px;">
 </div>
 
 <div style="text-align:center; font-size:20px;">
@@ -38,15 +38,6 @@ Jimmy | Shopl & Company | June 3, 2022
 [comment]: # (1. 유래를 통한 테스트 더블의 이해)
 [comment]: # (2. 테스트에서 테스트 더블이 어떤 역할을 어떻게 대신하는 지 )
 [comment]: # (## 주석 - XUnit Test Patterns )
-
-### 간단한 문제 예제
-```java
-public void createOrder (){
-    System.out.println("hello")
-}
-```
-
-[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
 ### 테스트 더블이란?
 
@@ -196,14 +187,13 @@ Person person = Person.builder()
 
 # Stub
 
-* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
+* 마치 실제로 동작하는 것처럼 보이게 만들어 놓은 객체
 
 [comment]: # (||| data-auto-animate)
 
 # Stub
-
-* Dummy가 마치 실제로 동작하는 것처럼 보이게 만든 객체.
-* 미리 반환할 데이터가 정의되어 있으며, 메소드를 호출하였을 경우 그것을 그대로 반환하는 역할만 수행
+* 마치 실제로 동작하는 것처럼 보이게 만들어 놓은 객체
+* 특정 상태를 가정한 하드코딩된 상태 -> 반환 값을 미리 정의
 
 [comment]: # (||| data-auto-animate)
 
@@ -263,7 +253,7 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 Stub 예제 - 패스워드 유효성 TC (Mockito)
 
-```java [|7-8]
+```java [|4-5]
 @Test
 void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
@@ -281,10 +271,52 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 }
 ```
 
-[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [1-2]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+```
+<!-- .element: data-id="code" -->
+[comment]: # (||| data-auto-animate)
+
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [4]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+
+password.encrypt(); ??
+```
+<!-- .element: data-id="code" -->
+
+[comment]: # (||| data-auto-animate)
+
+Stub 되지 않은 다른 메서드들은 어떻게 동작할까?
+
+```java [4]
+Password password = Mockito.mock(Password.class);
+given(password.validate()).willReturn(true);
+
+password.encrypt(); ??
+```
+<!-- .element: data-id="code" -->
+
+<div style="display:flex; justify-content:center;">
+    <div style="border-left:3px solid #a2a9b3; font-size:25px; font-style:italic; color:black;  box-sizing:content-box; width:fix-content; padding-left:20px;">
+    stub 되지 않은 메서드들에 대해서는 Mockito의 
+    <a href="https://javadoc.io/static/org.mockito/mockito-core/3.5.10/org/mockito/Mockito.html#RETURNS_DEFAULTS">
+        Answers.RETURNS_DEFAULTS
+    </a>
+    에서 정의한 기본 메서드들을 실행
+    </div>
+</div>
 
 [comment]: # (!!! data-auto-animate)
 
+
 # Fake
 
 [comment]: # (||| data-auto-animate)
@@ -296,13 +328,12 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 # Fake
 * 제품에는 적합하지 않지만, 실제 동작하는 구현을 제공
-* 프로덕션 DB 대신 List, Map 을 활용한 Repository
-* 인메모리 DB, 테스트 용도 DB 별도 구성하여 활용
+* 프로덕션 DB 대신 인메모리 DB, 테스트 용도 DB 별도 구성하여 활용
 
 [comment]: # (||| data-auto-animate)
 
 Fake 예제 - 로그인 이력 데이터 저장 추가
-```java [|13]
+```java [|3|5-7|13]
 public class LoginService {
 
     private final LoginHistoryRepository loginHistoryRepository;
@@ -345,9 +376,9 @@ public class FakeLoginHistoryRepository implements LoginHistoryRepository{
 
 [comment]: # (||| data-background-color="rgb(44, 74, 50)")
 
-Stub 예제 - 로그인 이력 저장 TC
+Fake 예제 - 로그인 이력 저장 TC
 
-```java [|11-12|18-20|22|24-27]
+```java [|6-10|15-17|19|21-24]
 public class LoginServiceTest {
     
     LoginService loginService;
@@ -385,7 +416,7 @@ public class LoginServiceTest {
 
 # Spy
 
-* 메소드의 사용 여부, 정상 호출 여부를 기록하여 검증에 활용
+* 메소드의 사용 여부, 정상 호출 여부에 대한 기록이 필요할 때 활용
 
 [comment]: # (||| data-auto-animate)
 
@@ -423,7 +454,7 @@ public class LoginServiceTest {
 [comment]: # (|||)
 
 Spy 예제 - 로그인 성공 시 이메일 전송 추가
-```java [|14]
+```java [|4|14]
 public class LoginService {
 
     private final LoginHistoryRepository loginHistoryRepository;
@@ -538,15 +569,15 @@ public class LoginServiceTest {
         loginService.login(email, password);
 
         assertThat(captor.getValue()).isEqualTo("jimmy.lee@shoplworks.com");   
-        
+        verify(spyEmailService).get(0);
+        verify(mock, times(1)).sendLoginSuccessEmail(anyString());
     }
 
 }
 ```
 
+[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
-
-[comment]: # (||| data-background-color="rgb(44, 74, 50)")
 # Mock
 
 [comment]: # (|||)
@@ -559,23 +590,40 @@ Mock 예제
 
 [comment]: # (!!! data-background-color="rgb(44, 74, 50)")
 
-# 스프링의 테스트 더블
+### <u>사족</u>
 
-@Mock, @Spy vs @MockBean, @SpyBean
+[comment]: # (||| data-auto-animate)
 
-[comment]: # (|||)
+### <u>사족</u>
 
-@InjectMocks vs @Autowired
+* 행위검증 vs 상태검증
 
-[comment]: # (!!!)
+[comment]: # (||| data-auto-animate)
 
-# 사족
+### <u>사족</u>
 
+* 행위검증 vs 상태검증
+* 테스트 가능한 설계
+
+[comment]: # (||| data-auto-animate)
+
+### <u>사족</u>
+
+* 행위검증 vs 상태검증
 * 테스트 가능한 설계
 * 테스트 픽스쳐
 
+[comment]: # (||| data-auto-animate)
 
+### <u>사족</u>
 
+* 행위검증 vs 상태검증
+* 테스트 가능한 설계
+* 테스트 픽스쳐
+* 스프링의 테스트 더블
+<!-- @Mock, @MockBean, @Spy, SpyBean, @InjectMocks -->
+
+[comment]: # (!!! data-auto-animate)
 
 
 
