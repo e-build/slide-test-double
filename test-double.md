@@ -98,7 +98,7 @@ public void createOrder (){
 
 [comment]: # (||| data-auto-animate)
 
-Dummy 예제 - 1. 로그인 기능 구현
+Dummy 예제 - 로그인 기능 구현
 
 ```java [|3|5-7|9-11|13|]
 public class LoginService {
@@ -120,7 +120,7 @@ public class LoginService {
 
 [comment]: # (||| data-background-color="rgb(44, 74, 50)")
 
-Dummy 예제 - 2. 이메일 유효성 TC
+Dummy 예제 - 이메일 유효성 TC
 
 ```java [|5]
 @Test
@@ -140,7 +140,7 @@ void login_GivenInvalidEmail_ThrowIllegalArgument...() {
 
 [comment]: # (||| data-background-color="rgb(44, 74, 50)")
 
-Dummy 예제 - 3. 현업에선...
+Dummy 예제 - 현업에선...
 
 ```java [|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30]
 Person person = Person.builder()
@@ -207,7 +207,7 @@ Person person = Person.builder()
 
 [comment]: # (||| data-auto-animate)
 
-Stub 예제 - 1. 로그인 기능 구현
+Stub 예제 - 로그인 기능 구현
 
 ```java [|9-11]
 public class LoginService {
@@ -229,7 +229,7 @@ public class LoginService {
 
 [comment]: # (||| data-background-color="rgb(44, 74, 50)")
 
-Stub 예제 - 2. 패스워드 유효성 TC (직접구현)
+Stub 예제 - 패스워드 유효성 TC (직접구현)
 
 ```java
 public class EmailStub extends Email {
@@ -242,9 +242,8 @@ public class EmailStub extends Email {
     }
 }
 ```
-```java
-import static org.mockito.BDDMockito.*;
 
+```java
 @Test
 void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
@@ -262,12 +261,9 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
 [comment]: # (||| data-background-color="rgb(44, 74, 50)")
 
-Stub 예제 - 2. 패스워드 유효성 TC (Mockito)
+Stub 예제 - 패스워드 유효성 TC (Mockito)
 
 ```java [|7-8]
-import static org.mockito.BDDMockito.*;
-import org.mockito.Mockito;
-
 @Test
 void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 
@@ -294,38 +290,90 @@ void login_GivenInvalidPassword_ThrowIllegalArgument...() {
 [comment]: # (||| data-auto-animate)
 
 # Fake
-* 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
+* 제품에는 적합하지 않지만, 실제 동작하는 구현을 제공
 
 [comment]: # (||| data-auto-animate)
 
 # Fake
-* 실제 동작하는 구현을 가지고 있지만, 프로덕션에서는 사용되기 적합하지 않은 객체
-* List, Map 을 활용한 Repository 구현 <br /> 혹은 InMemoryTestDatabase 활용
+* 제품에는 적합하지 않지만, 실제 동작하는 구현을 제공
+* 프로덕션 DB 대신 List, Map 을 활용한 Repository
+* 인메모리 DB, 테스트 용도 DB 별도 구성하여 활용
 
 [comment]: # (||| data-auto-animate)
 
-Fake 예제 - 1. 로그인 기능 추가
-```java [|9-11]
+Fake 예제 - 로그인 이력 데이터 저장 추가
+```java [|13]
 public class LoginService {
 
-    private final UserRepository userRepository;
+    private final LoginHistoryRepository loginHistoryRepository;
 
-    public LoginServic(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public LoginService(LoginHistoryRepository loginHistoryRepository){
+        this.loginHistoryRepository = loginHistoryRepository;
     }
 
 	public boolean login(Email email, Password password) {
 	
-        if (email.validate()) {
-			throw new IllegalArgumentException("Invalid email");
-		}
-		
-        if (password.validate()) {
-			throw new IllegalArgumentException("Invalid password");
-		}
+        ... email&password validation ... 
+
+        loginHistoryRepository.save(new LoginHistory(email));
 		
         return true;
 	}
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Fake 예제 - Fake 구현
+```java
+public class FakeLoginHistoryRepository implements LoginHistoryRepository{
+
+    private static final List<LoginHistory> fakeTable = new ArrayList<>();
+
+    public void save(LoginHistory loginHistory){
+        this.fakeTable.add(loginHistory);
+    }
+
+    public List<LoginHistory> findByEmail(String email){
+        return this.fakeTable
+                .stream()
+                .filter(row -> row.getEmail().equals(email))
+                .collect(toList());
+    }
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Stub 예제 - 로그인 이력 저장 TC
+
+```java [|11-12|18-20|22|24-27]
+public class LoginServiceTest {
+    
+    LoginService loginService;
+    LoginHistoryRepository fakeLoginHistoryRepository;
+
+    @BeforeEach
+    void setUp(){
+        fakeLoginHistoryRepository = new FakeLoginHistoryRepository();
+        loginService = new LoginService(fakeLoginHistoryRepository);
+    }
+
+    @Test
+    void login_GivenValidationPass_ThenSaveLoginHistory() {
+        
+        Email email = new Email("jimmy.lee@shoplworks.com");
+        Password password = Mockito.mock(Password.class);
+        given(password.validate()).willReturn(true);
+
+        loginService.login(email, password);
+
+        List<LoginHistory> savedLoginHistoryList = 
+                    fakeLoginHistoryRepository.findByEmail(email.getValue());
+        assertThat(savedLoginHistoryList).size(1);
+        assertThat(savedLoginHistoryList.get(0).getValue()).size("jimmy.lee@shoplworks.com");
+    }
+
 }
 ```
 
@@ -333,16 +381,172 @@ public class LoginService {
 
 # Spy
 
+[comment]: # (||| data-auto-animate)
+
+# Spy
+
+* 메소드의 사용 여부, 정상 호출 여부를 기록하여 검증에 활용
+
+[comment]: # (||| data-auto-animate)
+
+<div style="text-align:center;">
+    <img src="resources/spy-sequence.png" width="500px" height="400px" style="border-radius:8px;">
+</div>
+
+<div style="text-a  lign:center; font-size:20px;">
+    * SUT : System Under Test. 테스트 중인 시스템, 즉 테스트 대상
+</div> 
+
+<p style="font-size:25px;">
+    SUT에 의해 만들어진 또 다른 컴포넌트의 
+    <span style="color:#ba2552; text-decoration:underline;">
+    <strong>간접 출력을 포착</strong></span>
+    할 수 있도록 <br /> 
+    테스트 더블을 활용해야 한다. 포착된 간접 출력은 
+    <span style="color:#ba2552; text-decoration:underline;">
+    <strong>테스트 검증을 위해 활용</strong></span>
+    된다.
+</p>
+
+<div style="display:flex; justify-content:center;">
+    <div style="border-left:3px solid #a2a9b3; font-size:25px; font-style:italic; color:#a2a9b3;        box-sizing:content-box; width:fix-content; padding-left:20px;">
+    Use a Test Double to capture the indirect output calls made to another component by the system under test (SUT) for later verification by the test.
+    </div>
+</div>
+
+<br />
+
+<div style="text-align:right; font-size:20px;">
+    xUnit Test Patterns, 2010
+</div>
+
 [comment]: # (|||)
 
-Spy 정의
+Spy 예제 - 로그인 성공 시 이메일 전송 추가
+```java [|14]
+public class LoginService {
 
-[comment]: # (|||)
+    private final LoginHistoryRepository loginHistoryRepository;
+    private final EmailService emailService;
 
-Spy 예제
+    ...init constructor...
 
-[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
+	public boolean login(Email email, Password password) {
+	
+        ... email&password validation ... 
 
+        ... save login history ...
+
+        emailService.sendLoginSuccessEmail(email.getValue());
+		
+        return true;
+	}
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Spy 예제 - Spy 구현
+
+```java [|3-4|15-20]
+public class SpyEmailService extends EmailService {
+
+    private boolean called;
+    private int calledCount;
+    private String email;
+
+    public boolean isCalled() {
+        return this.called;
+    }
+
+    public String getEmail(){
+        return this.email;
+    }
+
+    @Override
+    public void sendLoginSuccessEmail(String email){
+        this.called = true;
+        this.calledCound++;
+        this.email = email;
+    }
+}
+```
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Spy 예제 - 이메일 전송 TC (직접구현)
+
+```java
+public class LoginServiceTest {
+    
+    LoginService loginService;
+    LoginHistoryRepository fakeLoginHistoryRepository;
+    EmailService spyEmailService;
+
+    @BeforeEach
+    void setUp(){
+        fakeLoginHistoryRepository = new FakeLoginHistoryRepository();
+        spyEmailService = new SpyEmailService();
+        loginService = new LoginService(fakeLoginHistoryRepository, spyEmailService);
+    }
+
+    @Test
+    void login_GivenValidationPass_ThenSendEmail() {
+        
+        Email email = new Email("jimmy.lee@shoplworks.com");
+        Password password = Mockito.mock(Password.class);
+        given(password.validate()).willReturn(true);
+
+        loginService.login(email, password);
+
+        assertThat(spyEmailService.isCalled()).isTrue();
+        assertThat(spyEmailService.getCalledCount()).isEqualTo(1);
+        assertThat(spyEmailService.getEmail()).isEqualTo("jimmy.lee@shoplworks.com");
+    }
+
+}
+```
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
+
+Spy 예제 - 이메일 전송 TC (Mockito)
+
+```java
+public class LoginServiceTest {
+    
+    LoginService loginService;
+    LoginHistoryRepository fakeLoginHistoryRepository;
+    EmailService spyEmailService;
+
+    @BeforeEach
+    void setUp(){
+        fakeLoginHistoryRepository = new FakeLoginHistoryRepository();
+        spyEmailService = Mockito.mock(EmailService.class);
+        loginService = new LoginService(fakeLoginHistoryRepository, spyEmailService);
+    }
+
+    @Test
+    void login_GivenValidationPass_ThenSendEmail() {
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        then(spyEmailService)
+            .should(sendLoginSuccessEmail(captor.capture()));
+        
+        Email email = new Email("jimmy.lee@shoplworks.com");
+        Password password = Mockito.mock(Password.class);
+        given(password.validate()).willReturn(true);
+
+        loginService.login(email, password);
+
+        assertThat(captor.getValue()).isEqualTo("jimmy.lee@shoplworks.com");   
+        
+    }
+
+}
+```
+
+
+
+[comment]: # (||| data-background-color="rgb(44, 74, 50)")
 # Mock
 
 [comment]: # (|||)
@@ -369,6 +573,7 @@ Mock 예제
 
 * 테스트 가능한 설계
 * 테스트 픽스쳐
+
 
 
 
