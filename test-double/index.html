@@ -70,7 +70,7 @@ Jimmy | Shopl & Company | June 3, 2022
 <br/>
 
 <div style="text-align:right; font-size:17px;">
-    xUnit Test Patterns, 2010
+    xUnit Test Patterns, 2007
 </div>
 
 </textarea></section>
@@ -492,7 +492,7 @@ public class LoginServiceTest {
 <br />
 
 <div style="text-align:right; font-size:20px;">
-    xUnit Test Patterns, 2010
+    xUnit Test Patterns, 2007
 </div>
 
 </textarea></section>
@@ -617,8 +617,7 @@ public class LoginServiceTest {
         loginService.login(email, password);
 
         assertThat(captor.getValue()).isEqualTo("jimmy.lee@shoplworks.com");   
-        verify(spyEmailService).get(0);
-        verify(mock, times(1)).sendLoginSuccessEmail(anyString());
+        verify(spyEmailService, times(1)).sendLoginSuccessEmail(anyString());
     }
 
 }
@@ -627,19 +626,27 @@ public class LoginServiceTest {
 </textarea></section>
 </section>
 <section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
 # Mock
 
 </textarea></section>
-<section data-markdown  ><textarea data-template>
+<section data-markdown  data-auto-animate><textarea data-template>
 
-Mock 정의
+# Mock
+
+* 실행을 기록하는 Spy, 특정 상태를 가정하는 Stub의 기능을 포함한 테스트 더블
 
 </textarea></section>
-<section data-markdown  data-background-color="rgb(44, 74, 50)"><textarea data-template>
+<section data-markdown  ><textarea data-template>
 
-Mock 예제
+<div style="text-align:center;">
+    <img src="resources/mock-range.png" width="600px" height="450px" style="border-radius:8px;">
+</div>
+
+<div style="text-align:center; font-size:20px;">
+<strong>< <i>테스트 더블 범위</i> ></strong>
+</div>
 
 </textarea></section>
 </section>
@@ -662,26 +669,6 @@ Mock 예제
 
 * 행위검증 vs 상태검증
 * 테스트 가능한 설계
-
-</textarea></section>
-<section data-markdown  data-auto-animate><textarea data-template>
-
-### <u>사족</u>
-
-* 행위검증 vs 상태검증
-* 테스트 가능한 설계
-* 테스트 픽스쳐
-
-</textarea></section>
-<section data-markdown  data-auto-animate><textarea data-template>
-
-### <u>사족</u>
-
-* 행위검증 vs 상태검증
-* 테스트 가능한 설계
-* 테스트 픽스쳐
-* 스프링의 테스트 더블
-<!-- @Mock, @MockBean, @Spy, SpyBean, @InjectMocks -->
 
 </textarea></section>
 </section>

@@ -59,7 +59,7 @@ Jimmy | Shopl & Company | June 3, 2022
 <br/>
 
 <div style="text-align:right; font-size:17px;">
-    xUnit Test Patterns, 2010
+    xUnit Test Patterns, 2007
 </div>
 
 [comment]: # (!!!)
@@ -448,7 +448,7 @@ public class LoginServiceTest {
 <br />
 
 <div style="text-align:right; font-size:20px;">
-    xUnit Test Patterns, 2010
+    xUnit Test Patterns, 2007
 </div>
 
 [comment]: # (|||)
@@ -569,8 +569,7 @@ public class LoginServiceTest {
         loginService.login(email, password);
 
         assertThat(captor.getValue()).isEqualTo("jimmy.lee@shoplworks.com");   
-        verify(spyEmailService).get(0);
-        verify(mock, times(1)).sendLoginSuccessEmail(anyString());
+        verify(spyEmailService, times(1)).sendLoginSuccessEmail(anyString());
     }
 
 }
@@ -580,15 +579,23 @@ public class LoginServiceTest {
 
 # Mock
 
-[comment]: # (|||)
+[comment]: # (||| data-auto-animate)
 
-Mock 정의
+# Mock
 
-[comment]: # (|||)
+* 실행을 기록하는 Spy, 특정 상태를 가정하는 Stub의 기능을 포함한 테스트 더블
 
-Mock 예제
+[comment]: # (||| data-auto-animate)
 
-[comment]: # (!!! data-background-color="rgb(44, 74, 50)")
+<div style="text-align:center;">
+    <img src="resources/mock-range.png" width="600px" height="450px" style="border-radius:8px;">
+</div>
+
+<div style="text-align:center; font-size:20px;">
+<strong>< <i>테스트 더블 범위</i> ></strong>
+</div>
+
+[comment]: # (!!!)
 
 ### <u>사족</u>
 
@@ -606,24 +613,6 @@ Mock 예제
 * 테스트 가능한 설계
 
 [comment]: # (||| data-auto-animate)
-
-### <u>사족</u>
-
-* 행위검증 vs 상태검증
-* 테스트 가능한 설계
-* 테스트 픽스쳐
-
-[comment]: # (||| data-auto-animate)
-
-### <u>사족</u>
-
-* 행위검증 vs 상태검증
-* 테스트 가능한 설계
-* 테스트 픽스쳐
-* 스프링의 테스트 더블
-<!-- @Mock, @MockBean, @Spy, SpyBean, @InjectMocks -->
-
-[comment]: # (!!! data-auto-animate)
 
 
 
