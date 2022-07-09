@@ -20,7 +20,7 @@
 [comment]: # (respondToHashChanges: false)
 [comment]: # (Other settings are documented at https://revealjs.com/config/)
 
-Jimmy | Shopl & Company | June 3, 2022
+Jimmy | Shopl & Company | June 7, 2022
 
 # 테스트 더블
 [comment]: # (1. 왜 '테스트 더블을 주제로 선정했는 지')
@@ -599,21 +599,6 @@ public class LoginServiceTest {
 
 ### <u>사족</u>
 
-[comment]: # (||| data-auto-animate)
-
-### <u>사족</u>
-
-* 행위검증 vs 상태검증
-
-[comment]: # (||| data-auto-animate)
-
-### <u>사족</u>
-
 * 행위검증 vs 상태검증
 * 테스트 가능한 설계
-
-[comment]: # (||| data-auto-animate)
-
-
-
 
